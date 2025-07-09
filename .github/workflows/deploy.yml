@@ -1,4 +1,4 @@
-name: CI/CD Deploy to VM
+name: CI/CD Deploy direto na VM
 
 on:
   push:
@@ -13,22 +13,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Copy source code to VM via SCP
+    - name: Copy files to VM
       uses: appleboy/scp-action@v0.1.4
       with:
+        source: "."
+        target: "/home/${{ secrets.VM_USER }}/app"
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: .
-        target: /home/ubuntu/app
+        key: ${{ secrets.VM_SSH_KEY }}
 
-    - name: Deploy via SSH
+    - name: Build and deploy on VM
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        timeout: 600
         script: |
-          cd /home/ubuntu/app
+          cd /home/${{ secrets.VM_USER }}/app
           docker-compose -f compose.yml down
           docker-compose -f compose.yml up -d --build
