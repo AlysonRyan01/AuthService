@@ -24,14 +24,16 @@ jobs:
     - name: Publish project
       run: dotnet publish -c Release -o ./publish
 
-    - name: Copy files to VM via SSH
+    - name: Copy published files and compose.yml to VM via SSH
       uses: appleboy/scp-action@v0.1.4
       with:
-        source: "publish/*"
-        target: "/home/ubuntu/app"
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.VM_SSH_KEY }}
+        source: |
+          publish/*
+          compose.yml
+        target: /home/ubuntu/app
 
     - name: Run deploy script on VM via SSH
       uses: appleboy/ssh-action@v0.1.7
@@ -41,6 +43,5 @@ jobs:
         key: ${{ secrets.VM_SSH_KEY }}
         script: |
           cd /home/ubuntu/app
-          # Exemplo: pare o container, rode docker-compose pull e up
-          docker-compose down
-          docker-compose up -d --build
+          docker-compose -f compose.yml down
+          docker-compose -f compose.yml up -d --build
