@@ -1,4 +1,4 @@
-name: CI/CD Deploy direto na VM
+name: CI/CD Deploy otimizado
 
 on:
   push:
@@ -10,19 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout código
       uses: actions/checkout@v3
 
-    - name: Copy files to VM
+    - name: Build da imagem Docker no GitHub Actions
+      run: docker build -t myapp/api:latest .
+
+    - name: Exportar imagem como image.tar.gz
+      run: docker save myapp/api:latest | gzip > image.tar.gz
+
+    - name: Enviar arquivos para a VM
       uses: appleboy/scp-action@v0.1.4
       with:
-        source: "."
-        target: "/home/ubuntu/app"
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: |
+          image.tar.gz
+          docker-compose.yml
+        target: "/home/${{ secrets.VM_USER }}/app"
 
-    - name: Build and deploy on VM
+    - name: Rodar docker-compose na VM com imagem pronta
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.VM_IP }}
@@ -31,7 +39,7 @@ jobs:
         timeout: "60m"
         command_timeout: "60m"
         script: |
-          cd /home/ubuntu/app
-          docker system prune -af
-          docker-compose -f compose.yml down
-          docker-compose -f compose.yml up -d --build
+          cd /home/${{ secrets.VM_USER }}/app
+          docker load < image.tar.gz
+          docker-compose down
+          docker-compose up -d
