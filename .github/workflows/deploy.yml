@@ -42,5 +42,5 @@ jobs:
         script: |
           cd /home/${{ secrets.VM_USER }}/app
           docker load < image.tar.gz
-          docker-compose down
-          docker-compose up -d
+          docker-compose -f compose.yml down
+          docker-compose -f compose.yml up -d --build
