@@ -28,7 +28,7 @@ jobs:
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        timeout: 20m
+        timeout: 60m
         script: |
           cd /home/${{ secrets.VM_USER }}/app
           docker-compose -f compose.yml down

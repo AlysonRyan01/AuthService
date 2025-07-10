@@ -5,6 +5,7 @@ namespace Domain.ValueObjects;
 public sealed record PasswordHash : ValueObject
 {
     public string Value { get; }
+    public static PasswordHash Default => new("");
 
     public PasswordHash(string value)
     {

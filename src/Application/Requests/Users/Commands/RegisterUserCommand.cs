@@ -1,4 +1,4 @@
-using Domain.Entities;
+using Application.DTOs;
 using Domain.Shared;
 using MediatR;
 
@@ -8,4 +8,4 @@ public sealed record RegisterUserCommand(
     string FirstName,
     string LastName,
     string Email,
-    string Password) : IRequest<Response<User>>;
+    string Password) : IRequest<Response<UserDto>>;

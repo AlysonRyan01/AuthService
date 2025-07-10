@@ -11,7 +11,14 @@ public class User : Entity
     private readonly List<UserRole> _roles = new();
     public IReadOnlyCollection<UserRole> Roles => _roles.AsReadOnly();
 
-    protected User() { }
+    // para EF
+    protected User()
+    {
+        FirstName = FirstName.Default;
+        LastName = LastName.Default;
+        Email = Email.Default;
+        PasswordHash = PasswordHash.Default;
+    }
     
     private User(
         FirstName firstName, 
