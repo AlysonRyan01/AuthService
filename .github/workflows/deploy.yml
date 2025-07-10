@@ -55,7 +55,7 @@ jobs:
         command_timeout: 60m
         script: |
           cd /home/${{ secrets.VM_USER }}/app
-          docker-compose -f compose.yml down --volumes --remove-orphans
+          docker-compose -f compose.yml down --remove-orphans
           docker image rm myapp/api:latest || true
           docker load < image.tar.gz
           docker-compose -f compose.yml up -d
