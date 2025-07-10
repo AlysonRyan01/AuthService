@@ -12,7 +12,7 @@ public class User : Entity
     public IReadOnlyCollection<UserRole> Roles => _roles.AsReadOnly();
 
     // para EF
-    protected User()
+    private User()
     {
         FirstName = FirstName.Default;
         LastName = LastName.Default;

@@ -6,7 +6,10 @@ namespace Domain.ValueObjects;
 public sealed record Email
 {
     public string Address { get; }
-    public static Email Default => new("");
+    public static Email Default => new();
+
+    private Email() => Address = "MaterializacaoEF";
+    
 
     public Email(string address)
     {

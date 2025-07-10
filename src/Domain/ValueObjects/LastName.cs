@@ -5,7 +5,9 @@ namespace Domain.ValueObjects;
 public sealed record LastName : ValueObject
 {
     public string Name { get; }
-    public static LastName Default => new("");
+    public static LastName Default => new();
+
+    private LastName() => Name = "MaterializacaoEF";
 
     public LastName(string name)
     {
