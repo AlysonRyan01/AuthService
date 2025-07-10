@@ -17,7 +17,7 @@ jobs:
       uses: appleboy/scp-action@v0.1.4
       with:
         source: "."
-        target: "/home/${{ secrets.VM_USER }}/app"
+        target: "/home/ubuntu/app"
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -28,8 +28,10 @@ jobs:
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        timeout: 60m
+        timeout: "60m"
+        command_timeout: "60m"
         script: |
-          cd /home/${{ secrets.VM_USER }}/app
+          cd /home/ubuntu/app
+          docker system prune -af
           docker-compose -f compose.yml down
           docker-compose -f compose.yml up -d --build
