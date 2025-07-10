@@ -28,13 +28,21 @@ jobs:
         ls -lh ./image.tar.gz
         ls -lh ./.env
 
+    - name: Verificar arquivos locais
+      run: |
+        ls -la
+        echo "Conteúdo de .env:"
+        cat .env || echo "Arquivo .env não encontrado"
+        echo "Conteúdo de compose.yml:"
+        cat compose.yml || echo "Arquivo compose.yml não encontrado"
+
     - name: Enviar image.tar.gz para a VM
       uses: appleboy/scp-action@v0.1.4
       with:
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "image.tar.gz compose.yml .env"
+        source: "image.tar.gz,compose.yml,.env"
         target: "/home/${{ secrets.VM_USER }}/app"
 
     - name: Rodar docker-compose na VM com imagem pronta
